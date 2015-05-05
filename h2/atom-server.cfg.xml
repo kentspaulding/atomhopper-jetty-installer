@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!---
+
+NOTE: Place this file in the following folder: /etc/atomhopper/atom-server.cfg.xml
+
+-->
+<atom-hopper-config xmlns="http://atomhopper.org/atom/hopper-config/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://atomhopper.org/atom/hopper-config/v1.0 ./../../config/atom-hopper-config.xsd">
+    <defaults>
+        <author name="Atom Hopper" />
+    </defaults>
+
+    <!--
+        Make sure to put in your actual domain or IP address and
+        the port number your using or the self referencing links
+        will be incorrect
+        Scheme should be either "http" or "https"
+    -->
+    <host domain="${hostname}:8080" scheme="http" />
+
+    <workspace title="Testing Namespace" resource="/namespace/">
+        <categories-descriptor reference="workspace-categories-descriptor" />
+        
+        <feed title="Testing Feed" resource="/feed">
+            <feed-source reference="feed-source" />            
+            <publisher reference="feed-publisher" />
+        </feed>
+    </workspace>  
+
+    <workspace title="Namespace 1 for cross-feed bug" resource="/namespace1/">
+        <categories-descriptor reference="workspace-categories-descriptor" />
+        
+        <feed title="FeedA" resource="/feedA">
+            <feed-source reference="feed-source" />            
+            <publisher reference="feed-publisher" />
+        </feed>
+        <feed title="FeedB" resource="/feedB">
+            <feed-source reference="feed-source" />            
+            <publisher reference="feed-publisher" />
+        </feed>
+    </workspace>  
+
+    <workspace title="Namespace 2 for cross-feed bug" resource="/namespace2/">
+        <categories-descriptor reference="workspace-categories-descriptor" />
+        
+        <feed title="FeedA" resource="/feedA">
+            <feed-source reference="feed-source" />            
+            <publisher reference="feed-publisher" />
+        </feed>
+        <feed title="FeedB" resource="/feedB">
+            <feed-source reference="feed-source" />            
+            <publisher reference="feed-publisher" />
+        </feed>
+    </workspace>  
+
+    <workspace title="Testing Namespace for Single Category Search" resource="/namespace-scs/">
+        <categories-descriptor reference="workspace-categories-descriptor" />
+        
+        <feed title="Testing Feed" resource="/feed">
+            <feed-source reference="feed-source" />            
+            <publisher reference="feed-publisher" />
+        </feed>
+    </workspace>  
+
+    <workspace title="Testing Namespace for paging" resource="/namespace-p/">
+        <categories-descriptor reference="workspace-categories-descriptor" />
+        
+        <feed title="Testing Feed" resource="/feed">
+            <feed-source reference="feed-source" />            
+            <publisher reference="feed-publisher" />
+	    <archive-feed href="/namespace-p/feed/archive" />
+        </feed>
+
+        <feed title="Testing Feed" resource="feed/archive" archived="true">
+            <feed-source reference="archive-feed-source" />            
+            <publisher reference="feed-publisher" />
+	    <current-feed href="/namespace-p/feed" />
+        </feed>
+    </workspace>  
+
+    <workspace title="Testing Namespace for overrides" resource="/allow-override/">
+        <categories-descriptor reference="workspace-categories-descriptor" />
+        
+        <feed title="Testing override true feed" resource="/true">
+            <feed-source reference="feed-source" />            
+            <publisher reference="feed-publisher-allow-override-true" />
+        </feed>
+
+        <feed title="Testing override false feed" resource="/false">
+            <feed-source reference="feed-source" />            
+            <publisher reference="feed-publisher-allow-override-false" />
+        </feed>
+    </workspace> 
+
+</atom-hopper-config>
+
