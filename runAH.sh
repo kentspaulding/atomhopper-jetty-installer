@@ -13,4 +13,6 @@ fi
 
 sleep 3
 curl -s localhost:8080/namespace/feed
+echo ""
+echo ""
 

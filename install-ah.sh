@@ -3,7 +3,7 @@
 # this script will download and install the jetty version of atomhopper
 
 function log {
-  echo '[' `date` '] ' $1 >> install-ah.log
+  echo '[' `date` '] ' $1 >> install-ah.sh.log
   echo '[' `date` '] ' $1
 }
 
@@ -15,34 +15,29 @@ command_name=$0
 function print_usage {
   echo "Usage: " `basename $command_name` "[ARG]..." 1>&2
   echo "where ARG can be zero or more of the following:" 1>&2
-  echo "    -p|--proxy <proxy>     - specify an http proxy for downloads" 1>&2
-  echo "    -u|--user  <username>  - specify the jetty user" 1>&2
-  echo "    -g|--group <group>     - specify the group for jetty to use" 1>&2
+  echo "    -p|--proxy <proxy>        - specify an http proxy for downloads" 1>&2
+  echo "    -g|--group <user:group>   - user:group (like chown) for jetty directories to use" 1>&2
   echo "" 1>&2
 }
 
-if [ "$1" == "--help" ]; then
-  print_usage
-  exit 0
-fi
-
 PROXY=
+AHCHOWN=tomcat:tomcat
 
 while [ ! -z "$1" ]; do
     case "$1" in
+
+        --help)
+            print_usage
+            exit 0
+            shift ;;
 
         -p|proxy|-proxy|--proxy)
 	    PROXY=$2
             shift ;
             shift ;;
 
-        -u|user|-user|--user)
-	    AHUSER=$2
-            shift ;
-            shift ;;
-
         -g|group|-group|--group)
-            AHGROUP=$2
+            AHCHOWN=$2
             shift ;
             shift ;;
 
@@ -54,7 +49,7 @@ while [ ! -z "$1" ]; do
     esac
 done
 
-echo "proxy=$PROXY user=$AHUSER group=$AHGROUP"
+echo "proxy=$PROXY chown=$AHCHOWN"
 
 ### calculate variables and urls
 AH_FOLDER=ah-jetty-server
@@ -83,6 +78,7 @@ log "install-ah.sh - CONF=$CONF, AH_ARTIFACT_URL=$AH_ARTIFACT_URL"
 
 $JAVACMD -jar jetty-killer.jar &>/dev/null    # shutdown any ah jetty
 sleep 3
+rm -f /var/log/atomhopper/jetty.log
 
 ### tear down any previous versions
 # remove any jetty files
@@ -103,10 +99,8 @@ fi
 for d in $dirs 
 do
   mkdir -p $d
-  if [ ! -z "$AHGROUP" ]; then
-    chown -R $AHUSER:$AHGROUP $d
-  else
-    chown -R tomcat:tomcat $d
+  if [ ! -z "$AHCHOWN" ]; then
+    chown -R $AHCHOWN $d
   fi
 done
 
@@ -126,4 +120,6 @@ fi
 
 sleep 3
 curl -s $MYIP:8080/namespace/feed
+echo ""
+echo ""
 
